@@ -33,4 +33,14 @@ For your convenience, the old mex upgrader script has been revitalized and alter
 
 This behavior can be toggled on lines 13 and 14 in gadgets/unit_mex_upgrader.lua (ignoreWeapons/ignoreStealth = true/false). Additionally, behavior can be fine tuned in function processMexData().
 
+# Custom Mexmap Configs
+
+Custom mexmap configs are to be placed here:
+* LuaRules/Configs/MetalSpots/<mapname>.lua
+
+If you are a mapper and wish to include a lua mexmap config (a far better solution than hardcoding the metalmap), you cna place your config here:
+* mapconfig/map_metal_layout.lua
+
+# Report bugs!
+
 Please be sure to report any bugs found on the project bug tracker, located here: https://github.com/Spring-Helper-Projects/Lua-Mex/issues
