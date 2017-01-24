@@ -1,7 +1,8 @@
 # Credits
 
-* Google Frog for designing lua-mex originally
-* Sprunk for abstracting lua-mex so that it can work with any spring game
+* CarRepairer for EasyMetal, the widget precursor to lua mexes
+* Google Frog for expanding it to a gadget
+* Sprung for abstracting lua-mex so that it can work with any spring game
 
 # Lua-Mex
 
