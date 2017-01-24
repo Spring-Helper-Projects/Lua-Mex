@@ -23,7 +23,7 @@ For upgrading mexes, there are two subcomponents. They are:
 Luamex first uses the finder to find all of the mex spots on a map, them puts them in a table that is then made available to other gadgets and to widgets via the fetcher. From this, mex placement can then place mexes directly on the mex spots. Additionally, it will display the amount of metal that the mex spot will yield on the map itself. Mexspots are drawn directly on the map and on the minimap as well. Neutral metal spots will be displayed in grey, and captured ones will be displayed in the owner team's teamcolor.
 
 For each builder a customparam can be added to that builder. This customparam is:
-area_mex_def = "<UnitNameOfYourMex>",
+`area_mex_def = "UnitDefNameOfYourMex",`
 
 Every builder with this customparam will receive a button on their orders menu that says "Mex". Clicking on this button and drawing a circle will cause mexes to be queued up everywhere within that circle. This customparam controls which mex is automatically queued for each builder.
 
@@ -36,10 +36,10 @@ This behavior can be toggled on lines 13 and 14 in gadgets/unit_mex_upgrader.lua
 # Custom Mexmap Configs
 
 Custom mexmap configs are to be placed here:
-* LuaRules/Configs/MetalSpots/<mapname>.lua
+`LuaRules/Configs/MetalSpots/(mapname).lua`
 
-If you are a mapper and wish to include a lua mexmap config (a far better solution than hardcoding the metalmap), you cna place your config here:
-* mapconfig/map_metal_layout.lua
+If you are a mapper and wish to include a lua mexmap config (a far better solution than hardcoding the metalmap), you can place your config here:
+`mapconfig/map_metal_layout.lua`
 
 # Report bugs!
 
