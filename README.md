@@ -1,7 +1,7 @@
 # Credits
 
-Google Frog for designing lua-mex originally
-Sprunk for abstracting lua-mex so that it can work with any spring game
+* Google Frog for designing lua-mex originally
+* Sprunk for abstracting lua-mex so that it can work with any spring game
 
 # Lua-Mex
 
@@ -10,14 +10,15 @@ This is a spinoff of luamex that was originally created for Complete Annihilatio
 # How it functions
 
 There are 4 main components to luamex itself:
-gadgets/mex_placement.lua
-gadgets/mex_spot_finder.lua
-widgets/api_mexspot_fetcher.lua
-widgets/cmd_mex_placement.lua
+
+* gadgets/mex_placement.lua
+* gadgets/mex_spot_finder.lua
+* widgets/api_mexspot_fetcher.lua
+* widgets/cmd_mex_placement.lua
 
 For upgrading mexes, there are two subcomponents. They are:
-gadgets/unit_mex_upgrader.lua
-widgets/cmd_mex_upgrade_helper.lua
+* gadgets/unit_mex_upgrader.lua
+* widgets/cmd_mex_upgrade_helper.lua
 
 Luamex first uses the finder to find all of the mex spots on a map, them puts them in a table that is then made available to other gadgets and to widgets via the fetcher. From this, mex placement can then place mexes directly on the mex spots. Additionally, it will display the amount of metal that the mex spot will yield on the map itself. Mexspots are drawn directly on the map and on the minimap as well. Neutral metal spots will be displayed in grey, and captured ones will be displayed in the owner team's teamcolor.
 
