@@ -159,12 +159,6 @@ for udid, ud in pairs(UnitDefs) do
 	end
 end
 
-local mexUnitDef = UnitDefNames["cormex"] -- reference mex
-local mexDefInfo = {
-	oddX = mexUnitDef.xsize % 4 == 2,
-	oddZ = mexUnitDef.zsize % 4 == 2,
-}
-
 local mexBuilder = {}
 
 local mexBuilderDefs = {}
@@ -215,17 +209,8 @@ end
 local function IntegrateMetal(x, z, forceUpdate)
 	local newCenterX, newCenterZ
 	
-	if (mexDefInfo.oddX) then
-		newCenterX = (floor( x / METAL_MAP_SQUARE_SIZE) + 0.5) * METAL_MAP_SQUARE_SIZE
-	else
-		newCenterX = floor( x / METAL_MAP_SQUARE_SIZE + 0.5) * METAL_MAP_SQUARE_SIZE
-	end
-	
-	if (mexDefInfo.oddZ) then
-		newCenterZ = (floor( z / METAL_MAP_SQUARE_SIZE) + 0.5) * METAL_MAP_SQUARE_SIZE
-	else
-		newCenterZ = floor( z / METAL_MAP_SQUARE_SIZE + 0.5) * METAL_MAP_SQUARE_SIZE
-	end
+	newCenterX = (floor( x / METAL_MAP_SQUARE_SIZE) + 0.5) * METAL_MAP_SQUARE_SIZE
+	newCenterZ = (floor( z / METAL_MAP_SQUARE_SIZE) + 0.5) * METAL_MAP_SQUARE_SIZE
 	
 	if (centerX == newCenterX and centerZ == newCenterZ and not forceUpdate) then 
 		return 
@@ -667,7 +652,12 @@ function widget:DrawWorld()
 	if WG.metalSpots and pos and ((cmdID and mexDefID[-cmdID]) or peruse or CMD_AREA_MEX == cmdID) then
 	
 		-- Find build position and check if it is valid (Would get 100% metal)
-		local bx, by, bz = Spring.Pos2BuildPos(mexUnitDef.id, pos[1], pos[2], pos[3])
+		local bx, by, bz
+		if cmdID < 0 then
+			bx, by, bz = Spring.Pos2BuildPos(-cmdID, pos[1], pos[2], pos[3])
+		else
+			bx, by, bz = pos[1], pos[2], pos[3]
+		end
 		local bface = Spring.GetBuildFacing()
 		local closestSpot, distance, index = GetClosestMetalSpot(bx, bz)
 		
