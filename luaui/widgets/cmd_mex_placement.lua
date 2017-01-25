@@ -14,6 +14,7 @@ function widget:GetInfo()
 end
 
 VFS.Include("LuaRules/Configs/customcmds.h.lua")
+local font = gl.LoadFont(LUAUI_DIRNAME.."Fonts/FreeSansBold.otf", 55, 7, 4)
 
 ------------------------------------------------------------
 -- Speedups
@@ -106,8 +107,7 @@ local allyTeams = {}	-- [id] = {team1, team2, ...}
 -- Config
 ------------------------------------------------------------
 
-local TEXT_SIZE = 16
-local TEXT_CORRECT_Y = 1.25
+local TEXT_SIZE = 15
 
 local MINIMAP_DRAW_SIZE = math.max(mapX,mapZ) * 0.0145
 
@@ -560,10 +560,10 @@ function calcMainMexDrawList()
 			glColor(0,0,0,0.7)
 			-- glDepthTest(false)
 			glLineWidth(spot.metal*2.4)
-			glDrawGroundCircle(x, 1, z, 40, 21)
+			glDrawGroundCircle(x, 1, z, 40, 32)
 			glColor(mexColor)
 			glLineWidth(spot.metal*1.5)
-			glDrawGroundCircle(x, 1, z, 40, 21)	
+			glDrawGroundCircle(x, 1, z, 40, 32)	
 			
 			glPopMatrix()	
 			
@@ -596,7 +596,13 @@ function calcMainMexDrawList()
 				glRotate(270,1,0,0)
   				glColor(1,1,1)
 				glTranslate(x,-z-40-options.size.value, y)
-				glText("+" .. ("%."..options.rounding.value.."f"):format(metal), 0.0, 0.0, options.size.value , "cno")
+				
+				--glText("+" .. ("%."..options.rounding.value.."f"):format(metal), 0.0, 0.0, options.size.value , "cno")
+				font:Begin()
+				font:SetTextColor(1,1,1)
+				font:SetOutlineColor(0,0,0)
+				font:Print("+" .. ("%."..options.rounding.value.."f"):format(metal), 0, 0, options.size.value, "con")
+				font:End()
 			end	
 	
 			glPopMatrix()	
