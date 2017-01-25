@@ -1,4 +1,6 @@
 
+if not gadgetHandler:IsSyncedCode() then return end
+
 function gadget:GetInfo()
 	return {
 		name      = "Metalspot Finder Gadget",
@@ -11,12 +13,6 @@ function gadget:GetInfo()
 		enabled   = true
 	}
 end
-
---------------------------------------------------------------------------------
--- SYNCED
---------------------------------------------------------------------------------
-if (gadgetHandler:IsSyncedCode()) then
-
 
 ------------------------------------------------------------
 -- Config
@@ -428,54 +424,3 @@ function GetValidStrips(spot)
 	spot.validRight = validRight
 end
 
---------------------------------------------------------------------------------
-else  -- UNSYNCED
---------------------------------------------------------------------------------
-
-function gadget:GameStart()
-	Spring.Utilities = Spring.Utilities or {}
-	VFS.Include("LuaRules/Utilities/json.lua");
-
-	local teamlist = Spring.GetTeamList();
-	local localPlayer = Spring.GetLocalPlayerID();
-	local mexes = "";
-	local encoded = false;
-	
-	for _, teamID in pairs(teamlist) do
-		local _,_,_,isAI = Spring.GetTeamInfo(teamID)
-		if isAI then
-			local aiid, ainame, aihost = Spring.GetAIInfo(teamID);
-			if (aihost == localPlayer) then
-				if not encoded then
-					local metalSpots = GetMexSpotsFromGameRules();
-					mexes = 'METAL_SPOTS:'..Spring.Utilities.json.encode(metalSpots);
-					encoded = true;
-				end
-				Spring.SendSkirmishAIMessage(teamID, mexes);
-			end
-		end
-	end
-end
-
-function GetMexSpotsFromGameRules()
-	local spGetGameRulesParam = Spring.GetGameRulesParam
-	local mexCount = spGetGameRulesParam("mex_count")
-	if (not mexCount) or mexCount == -1 then
-		return {}
-	end
-	
-	local metalSpots = {}
-	
-	for i = 1, mexCount do
-		metalSpots[i] = {
-			x = spGetGameRulesParam("mex_x" .. i),
-			y = spGetGameRulesParam("mex_y" .. i),
-			z = spGetGameRulesParam("mex_z" .. i),
-			metal = spGetGameRulesParam("mex_metal" .. i),
-		}
-	end
-	
-	return metalSpots
-end
-
-end
