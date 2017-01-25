@@ -1,11 +1,10 @@
 -- Basic mexes.
-return {
-	spots = {
-		{x = 12, z = 55, metal = 2},
-		{x = 34, z = 55, metal = 2},
-		{x = 67, z = 55, metal = 2},
-		{x = 89, z = 55, metal = 2},
-	}
+
+local spots = {
+	{x = 12, z = 55, metal = 2},
+	{x = 34, z = 55, metal = 2},
+	{x = 67, z = 55, metal = 2},
+	{x = 89, z = 55, metal = 2},
 }	
 
 -- Extra mexes added for 5v5+ games
