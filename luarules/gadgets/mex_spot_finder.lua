@@ -70,14 +70,6 @@ local metalmapStartZ = 1.5 * gridSize
 -- Variables
 ------------------------------------------------------------
 
-local mexUnitDef = UnitDefNames["cormex"]
-
-local mexDefInfo = {
-	square = false,
-	oddX = mexUnitDef.xsize % 4 == 2,
-	oddZ = mexUnitDef.zsize % 4 == 2,
-}
-
 local modOptions
 if (Spring.GetModOptions) then
   modOptions = Spring.GetModOptions()
@@ -176,17 +168,8 @@ function IntegrateMetal(x, z, radius)
 	
 	radius = radius or MEX_RADIUS
 	
-	if (mexDefInfo.oddX) then
-		centerX = (floor( x / METAL_MAP_SQUARE_SIZE) + 0.5) * METAL_MAP_SQUARE_SIZE
-	else
-		centerX = floor( x / METAL_MAP_SQUARE_SIZE + 0.5) * METAL_MAP_SQUARE_SIZE
-	end
-	
-	if (mexDefInfo.oddZ) then
-		centerZ = (floor( z / METAL_MAP_SQUARE_SIZE) + 0.5) * METAL_MAP_SQUARE_SIZE
-	else
-		centerZ = floor( z / METAL_MAP_SQUARE_SIZE + 0.5) * METAL_MAP_SQUARE_SIZE
-	end
+	centerX = (floor( x / METAL_MAP_SQUARE_SIZE) + 0.5) * METAL_MAP_SQUARE_SIZE
+	centerZ = (floor( z / METAL_MAP_SQUARE_SIZE) + 0.5) * METAL_MAP_SQUARE_SIZE
 	
 	local startX = floor((centerX - radius) / METAL_MAP_SQUARE_SIZE)
 	local startZ = floor((centerZ - radius) / METAL_MAP_SQUARE_SIZE)
@@ -196,28 +179,17 @@ function IntegrateMetal(x, z, radius)
 	endX, endZ = min(endX, MAP_SIZE_X_SCALED - 1), min(endZ, MAP_SIZE_Z_SCALED - 1)
 	
 	local mult = Spring.GetGameRulesParam("base_extraction")
-	local square = mexDefInfo.square
 	local result = 0
 	
-	if (square) then
-		for i = startX, endX do
-			for j = startZ, endZ do
-				local cx, cz = (i + 0.5) * METAL_MAP_SQUARE_SIZE, (j + 0.5) * METAL_MAP_SQUARE_SIZE
+	for i = startX, endX do
+		for j = startZ, endZ do
+			local cx, cz = (i + 0.5) * METAL_MAP_SQUARE_SIZE, (j + 0.5) * METAL_MAP_SQUARE_SIZE
+			local dx, dz = cx - centerX, cz - centerZ
+			local dist = sqrt(dx * dx + dz * dz)
+
+			if (dist < radius) then
 				local _, metal = spGetGroundInfo(cx, cz)
 				result = result + metal
-			end
-		end
-	else
-		for i = startX, endX do
-			for j = startZ, endZ do
-				local cx, cz = (i + 0.5) * METAL_MAP_SQUARE_SIZE, (j + 0.5) * METAL_MAP_SQUARE_SIZE
-				local dx, dz = cx - centerX, cz - centerZ
-				local dist = sqrt(dx * dx + dz * dz)
-				
-				if (dist < radius) then
-					local _, metal = spGetGroundInfo(cx, cz)
-					result = result + metal
-				end
 			end
 		end
 	end
