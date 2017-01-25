@@ -659,7 +659,7 @@ function widget:DrawWorld()
 	
 		-- Find build position and check if it is valid (Would get 100% metal)
 		local bx, by, bz
-		if cmdID < 0 then
+		if cmdID and cmdID < 0 then
 			bx, by, bz = Spring.Pos2BuildPos(-cmdID, pos[1], pos[2], pos[3])
 		else
 			bx, by, bz = pos[1], pos[2], pos[3]
