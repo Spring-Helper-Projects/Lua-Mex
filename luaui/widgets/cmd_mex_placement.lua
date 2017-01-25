@@ -190,6 +190,18 @@ local metalSpotsNil = true
 ------------------------------------------------------------
 -- Functions
 ------------------------------------------------------------
+local function GetNearestMex (x, z)
+	local units = Spring.GetUnitsInRectangle(x-1, z-1, x+1, z+1)
+	local myAlly = spGetMyAllyTeamID()
+	for i = 1, #units do
+		local unitID = units[i]
+		local unitDefID = Spring.GetUnitDefID(unitID)
+		if unitDefID and mexDefID[unitDefID] and spGetUnitAllyTeam(unitID) == myAlly then
+			return unitID
+		end
+	end
+end
+
 local function GetClosestMetalSpot(x, z) --is used by single mex placement, not used by areamex
 	local bestSpot
 	local bestDist = math.huge
@@ -351,7 +363,17 @@ function widget:CommandNotify(cmdID, params, options)
 				local z = command.z
 				local y = Spring.GetGroundHeight(x, z)
 
-				commandArrayToIssue[#commandArrayToIssue+1] = {-mexType, {x,y,z,0} , {"shift"}}
+				local unit = GetNearestMex (x, z)
+				if unit then
+					if Spring.GetUnitDefID(unit) ~= mexType then
+						commandArrayToIssue[#commandArrayToIssue+1] = {CMD.RECLAIM, {unit}, {"shift"}}
+						commandArrayToIssue[#commandArrayToIssue+1] = {CMD.INSERT, {-1, -mexType, CMD.OPT_INTERNAL, x,y,z,0}, {"alt"}}
+					else if select (5, Spring.GetUnitHealth (unit)) < 1 then
+						commandArrayToIssue[#commandArrayToIssue+1] = {CMD.REPAIR, {unit}, {"shift"}}
+					end
+				else
+					commandArrayToIssue[#commandArrayToIssue+1] = {-mexType, {x,y,z,0} , {"shift"}}
+				end
 			end
 
 			if (#commandArrayToIssue > 0) then
@@ -365,36 +387,20 @@ function widget:CommandNotify(cmdID, params, options)
 		local bx, bz = params[1], params[3]
 		local closestSpot = GetClosestMetalSpot(bx, bz)
 		if closestSpot then
-			local units = spGetUnitsInRectangle(closestSpot.x-1, closestSpot.z-1, closestSpot.x+1, closestSpot.z+1)
-			local foundUnit = false
-			local myAlly = spGetMyAllyTeamID()
-			for i = 1, #units do
-				local unitID = units[i]
-				local unitDefID = Spring.GetUnitDefID(unitID)
-				if unitDefID and mexDefID[unitDefID] and spGetUnitAllyTeam(unitID) == myAlly then
-					foundUnit = unitID
-					break
-				end
-			end
-			
+			local commandHeight = math.max(0, Spring.GetGroundHeight(closestSpot.x, closestSpot.z))
+			local foundUnit = GetNearestMex (closestSpot.x, closestSpot.z)
 			if foundUnit then
-				local build = select(5, spGetUnitHealth(foundUnit))
-				if build ~= 1 then
-					--Spring.Echo("Found a mex in progress, assisting")
+				if Spring.GetUnitDefID(unit) ~= mexType then
+					spGiveOrder(CMD.RECLAIM, {foundUnit}, CMD.OPT_INTERNAL)
+					spGiveOrder(CMD.INSERT, {-1, cmdID, options.coded, closestSpot.x, commandHeight, closestSpot.z, params[4]} , {"alt"})
+				elseif select (5, Spring.GetUnitHealth (foundUnit)) < 1 then
 					spGiveOrder(CMD.REPAIR, {foundUnit}, options.coded)
-				else
-					--Spring.Echo("Found a finished mex, nothing to do")
 				end
-				return true
 			else
-				local commandHeight = math.max(0, Spring.GetGroundHeight(closestSpot.x, closestSpot.z))
 				spGiveOrder(cmdID, {closestSpot.x, commandHeight, closestSpot.z, params[4]}, options.coded)
-				--Spring.Echo("Queueing a mex")
-				return true
 			end
-		else
-			--Spring.Echo("No nearby mexspot found to snap to")
 		end
+		return true
 	end
 end
 
