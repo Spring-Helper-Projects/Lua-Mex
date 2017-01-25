@@ -73,7 +73,6 @@ local metalmapStartZ = 1.5 * gridSize
 local mexUnitDef = UnitDefNames["cormex"]
 
 local mexDefInfo = {
-	extraction = 0.001,
 	square = false,
 	oddX = mexUnitDef.xsize % 4 == 2,
 	oddZ = mexUnitDef.zsize % 4 == 2,
@@ -127,6 +126,7 @@ end
 ------------------------------------------------------------
 function gadget:Initialize()
 	Spring.Log(gadget:GetInfo().name, LOG.INFO, "Mex Spot Finder Initialising")
+	Spring.SetGameRulesParam("base_extraction", 0.001)
 	local metalSpots, fromEngineMetalmap = GetSpots()
 	local metalSpotsByPos = false
 	
@@ -195,7 +195,7 @@ function IntegrateMetal(x, z, radius)
 	startX, startZ = max(startX, 0), max(startZ, 0)
 	endX, endZ = min(endX, MAP_SIZE_X_SCALED - 1), min(endZ, MAP_SIZE_Z_SCALED - 1)
 	
-	local mult = mexDefInfo.extraction
+	local mult = Spring.GetGameRulesParam("base_extraction")
 	local square = mexDefInfo.square
 	local result = 0
 	
