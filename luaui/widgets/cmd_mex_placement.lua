@@ -154,14 +154,13 @@ options = {
 
 local mexDefID = {}
 for udid, ud in pairs(UnitDefs) do
-	if ud.isExtractor then
-		mexDefID[udid] = true
+	if ud.customParams.metal_extractor then
+		mexDefID[udid] = tonumber (ud.customParams.metal_extractor)
 	end
 end
 
 local mexUnitDef = UnitDefNames["cormex"] -- reference mex
 local mexDefInfo = {
-	extraction = 0.001,
 	oddX = mexUnitDef.xsize % 4 == 2,
 	oddZ = mexUnitDef.zsize % 4 == 2,
 }
@@ -242,7 +241,7 @@ local function IntegrateMetal(x, z, forceUpdate)
 	startX, startZ = max(startX, 0), max(startZ, 0)
 	endX, endZ = min(endX, MAP_SIZE_X_SCALED - 1), min(endZ, MAP_SIZE_Z_SCALED - 1)
 	
-	local mult = mexDefInfo.extraction
+	local mult = Spring.GetGameRulesParam("base_extraction")
 	local result = 0
 
 	for i = startX, endX do
@@ -508,7 +507,7 @@ function widget:Update()
 			return 
 		end
 		IntegrateMetal(coords[1], coords[3])
-		WG.mouseoverMexIncome = extraction
+		WG.mouseoverMexIncome = extraction * mexDefID[-cmd_id]
 	end
 end
 

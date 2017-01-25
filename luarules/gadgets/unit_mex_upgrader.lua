@@ -101,7 +101,8 @@ function determine(ud, wd)
     if isBuilder(unitDef) then 
       insert(tmpbuilders, unitDefID) 
     else 
-      local extractsMetal = unitDef.extractsMetal 
+      local cp_mex = unitDef.customParams.metal_extractor
+      local extractsMetal = cp_mex and tonumber (cp_mex) or 0
       if (extractsMetal > 0) then 
         local mexDef = {} 
         mexDef.extractsMetal = extractsMetal 
