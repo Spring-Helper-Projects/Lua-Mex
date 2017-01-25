@@ -367,7 +367,7 @@ function widget:CommandNotify(cmdID, params, options)
 					if Spring.GetUnitDefID(unit) ~= mexType then
 						commandArrayToIssue[#commandArrayToIssue+1] = {CMD.RECLAIM, {unit}, {"shift"}}
 						commandArrayToIssue[#commandArrayToIssue+1] = {CMD.INSERT, {-1, -mexType, CMD.OPT_INTERNAL, x,y,z,0}, {"alt"}}
-					else if select (5, Spring.GetUnitHealth (unit)) < 1 then
+					elseif select (5, Spring.GetUnitHealth (unit)) < 1 then
 						commandArrayToIssue[#commandArrayToIssue+1] = {CMD.REPAIR, {unit}, {"shift"}}
 					end
 				else
