@@ -17,30 +17,31 @@ There are 4 main components to luamex itself:
 * widgets/api_mexspot_fetcher.lua
 * widgets/cmd_mex_placement.lua
 
-For upgrading mexes, there are two subcomponents. They are:
-* gadgets/unit_mex_upgrader.lua
-* widgets/cmd_mex_upgrade_helper.lua
-
 Luamex first uses the finder to find all of the mex spots on a map, them puts them in a table that is then made available to other gadgets and to widgets via the fetcher. From this, mex placement can then place mexes directly on the mex spots. Additionally, it will display the amount of metal that the mex spot will yield on the map itself. Mexspots are drawn directly on the map and on the minimap as well. Neutral metal spots will be displayed in grey, and captured ones will be displayed in the owner team's teamcolor.
+
+Each mex needs a customparam defining extraction, which is a multiplier for the base spot value:
+`metal_extractor = 2`
 
 For each builder a customparam can be added to that builder. This customparam is:
 `area_mex_def = "UnitDefNameOfYourMex",`
 
-Every builder with this customparam will receive a button on their orders menu that says "Mex". Clicking on this button and drawing a circle will cause mexes to be queued up everywhere within that circle. This customparam controls which mex is automatically queued for each builder.
-
-## Upgrading mexes
-
-For your convenience, the old mex upgrader script has been revitalized and altered to work for pretty much any spring game. It uses the extract's metal amount to compare unitdefs, and if a builder can build a mex with a larger extraction rate, it is given an upgrade mex button. This works exactly like the mex button previously mentioned. The builder will travel to the mex spot, reclaim the previous mex and build the appropriate upgraded one. By default, mexes with weapons, stealth, cloaked, etc will attempt to build into advanced mexes with those attributes. For this reason, in Balanced Annihilation, a basic exploiter mex with the llt will be upgraded into the moho exploiter with the large cannon.
-
-This behavior can be toggled on lines 13 and 14 in gadgets/unit_mex_upgrader.lua (ignoreWeapons/ignoreStealth = true/false). Additionally, behavior can be fine tuned in function processMexData().
+Every builder with this customparam will receive a button on their orders menu that says "Mex". Clicking on this button and drawing a circle will cause mexes to be queued up (or replaced, if of different type) everywhere within that circle. This customparam controls which mex is automatically queued for each builder.
 
 # Custom Mexmap Configs
 
 Custom mexmap configs are to be placed here:
 `LuaRules/Configs/MetalSpots/(mapname).lua`
 
-If you are a mapper and wish to include a lua mexmap config (a far better solution than hardcoding the metalmap), you can place your config here:
+If you are a mapper and wish to include a lua mexmap config (a far more modern solution than hardcoding the metalmap), you can place your config here:
 `mapconfig/map_metal_layout.lua`
+
+Maps without a config have one generated dynamically from the engine metal map. The reference extraction value (in same units as engine extraction) is controllable through the `base_extraction` game rules param (found in `LuaRules\Gadgets\mex_spot_finder.lua`). Generally it's a bad idea to touch this because it won't affect maps that do have a config provided, creating a discrepancy.
+
+# AI
+
+Mex spots are available for AI to read as game rules params.
+`mex_count` denotes the number of mexes- free placement maps (like speedmetal) have this set to -1.
+Then, each mex has three parameters with names `mex_x#`, `mex_z#` and `mex_metal#` which are the coordinates and extraction respectively for the #th mex (indexed from 1).
 
 # Report bugs!
 
