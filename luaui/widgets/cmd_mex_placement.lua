@@ -13,6 +13,8 @@ function widget:GetInfo()
 	}
 end
 
+if Spring.GetModOptions().luamex ~= "enabled" then return false end
+
 VFS.Include("LuaRules/Configs/customcmds.h.lua")
 local font = gl.LoadFont(LUAUI_DIRNAME.."Fonts/FreeSansBold.otf", 55, 7, 4)
 
@@ -114,7 +116,21 @@ local MINIMAP_DRAW_SIZE = math.max(mapX,mapZ) * 0.0145
 options_path = 'Settings/Interface/Map/Metal Spots'
 options_order = { 'drawicons', 'size', 'specPlayerColours', 'rounding'}
 options = {
-	
+
+	drawincome = {
+		name = 'Should income be drawn below the mex spot?',
+		type = 'bool',
+		value = true,
+		tooltip = "When disabled, this will prevent income from being drawn below the mex spot.",
+		OnChange = function() updateMexDrawList() end
+	},	
+	drawcustomincomeamount = {
+		name = 'Draw a custom mex income amount under each spot instead of the automatically calculated one?',
+		type = 'bool',
+		value = false,
+		tooltip = "Enabled, this will allow you to draw a custom amount underneath each mex spot.",
+		OnChange = function() updateMexDrawList() end
+	},	
 	drawicons = {
 		name = 'Show Income as Icon',
 		type = 'bool',
@@ -138,6 +154,22 @@ options = {
 		min = 1,
 		max = 4,
 		advanced = true,
+		OnChange = function() updateMexDrawList() end
+	},
+	multiplier = {
+		name = "Multiplier used for base mex value",
+		type = "number",
+		value = 1, -- Most games will use 1 for this value as most games base mex income around a mex giving 2.0. Please not that changing this value only changes the number visually displayed underneath the mex spot. The actual multiplier is determined in the mex unitdef customparam "metal_extractor = <multiplier>,"
+		min = 0,
+		max = 100,
+		OnChange = function() updateMexDrawList() end
+	},
+	customamount = {
+		name = "Custom amount to be drawn under each mex",
+		type = "number",
+		value = 2.0, -- Most games will use 1 for this value as most games base mex income around a mex giving 2.0. Please not that changing this value only changes the number visually displayed underneath the mex spot. The actual multiplier is determined in the mex unitdef customparam "metal_extractor = <multiplier>,"
+		min = 0,
+		max = 100,
 		OnChange = function() updateMexDrawList() end
 	},
 	specPlayerColours = {
@@ -592,17 +624,23 @@ function calcMainMexDrawList()
 				glTexRect(x-width/2, z+40, x+width/2, z+40+size,0,0,metal,1)
 				glTexture(false)
 			else
-				-- Draws the metal spot's base income "south" of the metal spot
-				glRotate(270,1,0,0)
-  				glColor(1,1,1)
-				glTranslate(x,-z-40-options.size.value, y)
-				
-				--glText("+" .. ("%."..options.rounding.value.."f"):format(metal), 0.0, 0.0, options.size.value , "cno")
-				font:Begin()
-				font:SetTextColor(1,1,1)
-				font:SetOutlineColor(0,0,0)
-				font:Print("+" .. ("%."..options.rounding.value.."f"):format(metal), 0, 0, options.size.value, "con")
-				font:End()
+				if options.drawincome.value == true then
+					-- Draws the metal spot's base income "south" of the metal spot
+					glRotate(270,1,0,0)
+					glColor(1,1,1)
+					glTranslate(x,-z-40-options.size.value, y)
+					
+					--glText("+" .. ("%."..options.rounding.value.."f"):format(metal), 0.0, 0.0, options.size.value , "cno")
+					font:Begin()
+					font:SetTextColor(1,1,1)
+					font:SetOutlineColor(0,0,0)
+					if options.drawcustomincomeamount.value ~= true then
+							font:Print("+" .. ("%."..options.rounding.value.."f"):format(metal*options.multiplier.value), 0, 0, options.size.value, "con")
+					else
+						font:Print("+" .. ("%."..options.rounding.value.."f"):format(options.customamount.value), 0, 0, options.size.value, "con")
+					end
+					font:End()
+				end
 			end	
 	
 			glPopMatrix()	
