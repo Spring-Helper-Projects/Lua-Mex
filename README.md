@@ -37,6 +37,12 @@ If you are a mapper and wish to include a lua mexmap config (a far more modern s
 
 Maps without a config have one generated dynamically from the engine metal map. The reference extraction value (in same units as engine extraction) is controllable through the `base_extraction` game rules param (found in `LuaRules\Gadgets\mex_spot_finder.lua`). Generally it's a bad idea to touch this because it won't affect maps that do have a config provided, creating a discrepancy.
 
+# AI
+
+Mex spots are available for AI to read as game rules params.
+`mex_count` denotes the number of mexes- free placement maps (like speedmetal) have this set to -1.
+Then, each mex has three parameters with names `mex_x#`, `mex_z#` and `mex_metal#` which are the coordinates and extraction respectively for the #th mex (indexed from 1).
+
 # Report bugs!
 
 Please be sure to report any bugs found on the project bug tracker, located here: https://github.com/Spring-Helper-Projects/Lua-Mex/issues
