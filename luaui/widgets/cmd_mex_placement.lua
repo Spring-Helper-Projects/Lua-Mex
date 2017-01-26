@@ -167,7 +167,7 @@ options = {
 	customamount = {
 		name = "Custom amount to be drawn under each mex",
 		type = "number",
-		value = 2.0, -- Most games will use 1 for this value as most games base mex income around a mex giving 2.0. Please not that changing this value only changes the number visually displayed underneath the mex spot. The actual multiplier is determined in the mex unitdef customparam "metal_extractor = <multiplier>,"
+		value = 2.0,
 		min = 0,
 		max = 100,
 		OnChange = function() updateMexDrawList() end
