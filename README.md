@@ -29,14 +29,27 @@ Every builder with this customparam will receive a button on their orders menu t
 
 # Custom Mexmap Configs
 
-Custom mexmap configs are to be placed here:
+Maps without a config have one generated dynamically from the engine metal map. A manual config can be provided either in the game or the map.
+
+Game-side configs are to be placed here:
 `LuaRules/Configs/MetalSpots/(mapname).lua`
 
 If you are a mapper and wish to include a lua mexmap config (a far more modern solution than hardcoding the metalmap), you can place your config here:
 `mapconfig/map_metal_layout.lua`
 
-Maps without a config have one generated dynamically from the engine metal map. The reference extraction value (in same units as engine extraction) is controllable through the `base_extraction` game rules param (found in `LuaRules\Gadgets\mex_spot_finder.lua`). Generally it's a bad idea to touch this because it won't affect maps that do have a config provided, creating a discrepancy.
+The config consists of a table with the following fields:
 
+`spots` is an array of mex spots, and is mandatory for map-side configs. Each mex spot is a table which has to contain `x` and `z` number fields (spot co-ordinates) and an optional `metal` number field (spot value).
+
+`metalValueOverride` is an optional number field. If used in a game-side config without the `spots` table, this will be the value of all spots detected through the engine metalmap. If used alongside a `spots` table, it acts as a fallback when the value is not explicitly set for that spot.
+
+By default, if the override is not present, spots without an explicit value will use extraction based on the engine metalmap at given spot, and if there is no metal there, the last fallback value is 2 (configurable).
+
+## Config examples
+Browse through actual configs: https://github.com/Spring-Helper-Projects/Lua-Mex/tree/master/luarules/configs/MetalSpots
+
+Note that the config is regular Lua code so it can also have dynamically created content. For an example on what you can do, see 
+https://github.com/Spring-Helper-Projects/Lua-Mex/blob/master/luarules/configs/MetalSpots/example.lua
 # AI
 
 Mex spots are available for AI to read as game rules params.
